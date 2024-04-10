@@ -6,7 +6,7 @@
 ## 📌 Introduction
 To be updated.
 
-## 📁 폴더 구조
+## 📁 Project Structure
 
 ```
 ├─ apps                 : 서버가 제공하는 기능이 정의된 폴더
@@ -19,7 +19,7 @@ To be updated.
 ```
 
 ## ⚙️ Installation
-1. Clone the Repository
+1. Clone this Repository
 
 ```shell
 $ git clone https://github.com/BBOXEEEE/braille-education-app-server
