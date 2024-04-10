@@ -6,20 +6,20 @@
 ## 📌 Introduction
 To be updated.
 
-## 📁 Project Structure
+## 📂 Project Structure
 
 ```
-├─ apps                 : 서버가 제공하는 기능이 정의된 폴더
-│  ├─ constants         : 상수를 관리하는 폴더
-│  │  └─ domain.py      : 객체 탐지 모델이 분류할 수 있는 클래스 목록
-│  └─ object_detection  : 객체 탐지 기능 구현 (모델 학습 완료 시 분리 예정)
+├─ apps                     : 서버가 제공하는 기능이 정의된 폴더
+│  ├─ constants             : 상수를 관리하는 폴더
+│  │  └─ domain.py          : 객체 탐지 모델이 분류할 수 있는 클래스 목록
+│  └─ object_detection      : 객체 탐지 기능 구현 (모델 학습 완료 시 분리 예정)
 │     ├─ __init__.py
 │     └─ routes.py
-├─ model                : 객체 탐지 모델을 학습하기 위한 폴더
+├─ model                    : 객체 탐지 모델을 학습하기 위한 폴더
 │  └─ test.py
-├─ app.py               : 서버 기본 코드
-├─ README.md            : README
-└─requirements.txt      : pip package 목록
+├─ app.py                   : 서버 기본 코드
+├─ README.md                : README
+└─requirements.txt          : pip package 목록
 ```
 
 ## ⚙️ Installation
