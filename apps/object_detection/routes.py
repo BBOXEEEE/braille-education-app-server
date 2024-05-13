@@ -56,8 +56,6 @@ def detect_object():
         results = sorted(results, key=lambda x: x[1], reverse=True)
         
         # 3. Select the top 3 classes without duplication
-        print(results)
-        
         top3 = []
         cnt = 0
         for id, _ in results:
