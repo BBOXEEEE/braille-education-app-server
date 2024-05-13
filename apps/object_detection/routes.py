@@ -56,17 +56,20 @@ def detect_object():
         results = sorted(results, key=lambda x: x[1], reverse=True)
         
         # 3. Select the top 3 classes without duplication
-        results = results[:3]
+        print(results)
         
+        top3 = []
+        cnt = 0
+        for id, _ in results:
+            if cnt < 3 and id not in top3:
+                top3.append(id)
+                cnt += 1
+
         # 4. Mapping the class id to the class name
-        categories = [Domain().get_category(id) for id, _ in results]
+        categories = [Domain().get_category(id) for id in top3]
 
         # 5. Translation Text to Braille
         braille_list = [textToBraille(category) for category in categories]
-        # braille_list = [
-        #     [1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0],
-        #     [1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0]
-        # ]
 
         # 6. Convert the result to the JSON format
         ret = [{'word': category, 'braille': braille} for category, braille in zip(categories, braille_list)]
