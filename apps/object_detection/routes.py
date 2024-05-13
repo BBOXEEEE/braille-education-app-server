@@ -5,6 +5,7 @@ from ultralytics import YOLO
 
 from . import object_detection
 from ..constants.domain import Domain
+from ..text_to_braille.text_to_braille import textToBraille
 
 @object_detection.route("/", methods=['POST'])
 def detect_object():
@@ -36,9 +37,11 @@ def detect_object():
 
         1. Get the class and confidence score
         2. Sort the result by confidence score in descending order
-        3. Select the top 2 classes
+        3. Select the top 3 classes without duplication
         4. Mapping the class id to the class name
-        5. Return the result
+        5. Translation Text to Braille
+        6. Convert the result to the JSON format
+        7. Return the result
         '''
 
         # 1. Get the class and confidence score
@@ -52,14 +55,24 @@ def detect_object():
         # 2. Sort the result by confidence score in descending order
         results = sorted(results, key=lambda x: x[1], reverse=True)
         
-        # 3. Select the top 2 classes
-        results = results[:2]
+        # 3. Select the top 3 classes without duplication
+        results = results[:3]
         
         # 4. Mapping the class id to the class name
         categories = [Domain().get_category(id) for id, _ in results]
 
-        # 5. Return the result
-        return jsonify(categories), 200
+        # 5. Translation Text to Braille
+        braille_list = [textToBraille(category) for category in categories]
+        # braille_list = [
+        #     [1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0],
+        #     [1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0]
+        # ]
+
+        # 6. Convert the result to the JSON format
+        ret = [{'word': category, 'braille': braille} for category, braille in zip(categories, braille_list)]
+
+        # 7. Return the result
+        return jsonify(ret), 200
     finally:
         os.remove(os.path.join(save_path, filename))
 
