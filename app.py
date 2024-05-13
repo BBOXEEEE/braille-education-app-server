@@ -8,7 +8,7 @@ CORS(app)
 app.register_blueprint(object_detection, url_prefix='/')
 
 address = '0.0.0.0'
-port = 5555
+port = 15555
 
 if __name__ == '__main__':
     app.run(debug=True, host=address, port=port)
