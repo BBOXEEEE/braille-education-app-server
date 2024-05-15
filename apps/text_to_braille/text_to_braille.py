@@ -1,5 +1,5 @@
 import hgtk
-from . import braille_list
+import braille_list
 
 
 onsetList = {
@@ -15,16 +15,25 @@ nucleuseList = {
     'ㅡ': "⠪", 'ㅢ': "⠺", 'ㅣ': "⠕"
 }
 codaList = {
-    '\0': "", 'ㄱ': "⠁", 'ㄲ': "⠁⠁", 'ㄳ': "⠁⠄", 'ㄴ': "⠒", 'ㄵ': "⠒⠅",
+    '': "", 'ㄱ': "⠁", 'ㄲ': "⠁⠁", 'ㄳ': "⠁⠄", 'ㄴ': "⠒", 'ㄵ': "⠒⠅",
     'ㄶ': "⠒⠴", 'ㄷ': "⠔", 'ㄹ': "⠂", 'ㄺ': "⠂⠁", 'ㄻ': "⠂⠢", 'ㄼ': "⠂⠃",
     'ㄽ': "⠂⠄", 'ㄾ': "⠂⠦", 'ㄿ': "⠂⠲", 'ㅀ': "⠂⠴", 'ㅁ': "⠢", 'ㅂ': "⠃",
     'ㅄ': "⠃⠄", 'ㅅ': "⠄", 'ㅆ': "⠌", 'ㅇ': "⠶", 'ㅈ': "⠅", 'ㅊ': "⠆",
     'ㅋ': "⠖", 'ㅌ': "⠦", 'ㅍ': "⠲", 'ㅎ': "⠴"
 }
 
+def get_abbreviation2(nucleus, coda):
+    abbr_map = {
+        ('ㅓ', 'ㄱ'): "⠹", ('ㅓ', 'ㄴ'): "⠾", ('ㅓ', 'ㄹ'): "⠞", ('ㅕ', 'ㄴ'): "⠡", 
+        ('ㅕ', 'ㄹ'): "⠳", ('ㅕ', 'ㅇ'): "⠻", ('ㅗ', 'ㄱ'): "⠭", ('ㅗ', 'ㄴ'): "⠷", 
+        ('ㅗ', 'ㅇ'): "⠿", ('ㅜ', 'ㄴ'): "⠛", ('ㅜ', 'ㄹ'): "⠯", ('ㅡ', 'ㄴ'): "⠵", 
+        ('ㅡ', 'ㄹ'): "⠮", ('ㅣ', 'ㄴ'): "⠟",
+    }
+    return abbr_map.get((nucleus, coda), "")
+
 def get_abbreviation(onset, nucleus, coda):
     abbr_map = {
-        ('ㄱ', 'ㅏ', ''): "⠫", ('ㄴ', 'ㅏ', ''): "⠉", ('ㄷ', 'ㅏ', ''): "⠊", ('ㅁ', 'ㅏ', ''): "⠑", 
+        ('ㄱ', 'ㅏ', ''): "⠫", ('ㄴ', 'ㅏ', ''): "⠉", ('ㄷ', 'ㅏ', ''): "⠊", ('ㅁ', 'ㅏ', ''): "⠑", ('ㅇ', 'ㅏ', ''): "⠣",
         ('ㅂ', 'ㅏ', ''): "⠘", ('ㅅ', 'ㅏ', ''): "⠇", ('ㅈ', 'ㅏ', ''): "⠨", ('ㅋ', 'ㅏ', ''): "⠋", 
         ('ㅌ', 'ㅏ', ''): "⠓", ('ㅍ', 'ㅏ', ''): "⠙", ('ㅎ', 'ㅏ', ''): "⠚",  ('ㅇ', 'ㅓ', 'ㄱ'): "⠹",
         ('ㅇ', 'ㅓ', 'ㄴ'): "⠾", ('ㅇ', 'ㅓ', 'ㄹ'): "⠞", ('ㅇ', 'ㅕ', 'ㄴ'): "⠡", ('ㅇ', 'ㅕ', 'ㄹ'): "⠳", 
@@ -70,23 +79,38 @@ def textToBraille(hangeol):
     # print(jamo)
     onsets, nucleuses, codas = split_(jamo)
     
+    checkAbbr = False
+    tempOnset = ''
     braille = ''
     for i in range(len(onsets)): # 띄어쓰기 처리 
-        braille_char = get_abbreviation(onsets[i], nucleuses[i], codas[i])
-        if (braille_char == ''): 
-            braille_char = noneAbbr(onsets[i], nucleuses[i], codas[i])
+        braille_char = get_abbreviation(onsets[i], nucleuses[i], codas[i]) # 약어 확인 
+        if (braille_char != '' and onsets[i] == 'ㅇ' and checkAbbr):
+            tempOnset += braille_char
+            braille_char = tempOnset
+        if (nucleuses[i] == 'ㅏ' and codas[i] == ''): # 가,나,다 ... 약어 다음에 초성이 ㅇ으로 된 글자가 나오는거 어쩌고
+            checkAbbr = True
+            tempOnset = nucleuseList.get(nucleuses[i])
+        if (braille_char == ''): # 약어가 아니었을 때
+            braille_abbr = get_abbreviation2(nucleuses[i], codas[i]) # 초성이 'ㅇ'인 약어 확인 
+            if (braille_abbr != ''):
+                braille_char = onsetList.get(onsets[i]) + braille_abbr
+            else: 
+                if (onsets[i] == 'ㅇ'): # 초성이 'ㅇ'이고 종성이 없는지 확인 
+                    print(checkAbbr)
+                    if (checkAbbr):
+                        braille_char = tempOnset + nucleuseList.get(nucleuses[i]) + codaList.get(codas[i])
+                        checkAbbr = False
+                    else: braille_char = nucleuseList.get(nucleuses[i]) + codaList.get(codas[i])
+                else:
+                    if (nucleuses[i] == 'ㅏ' and onsets[i] != 'ㅊ' and onsets[i] != 'ㄹ'):
+                        braille_char = get_abbreviation(onsets[i], nucleuses[i], '') + codaList.get(codas[i])
+                        checkAbbr = True 
+                    else:
+                        braille_char = noneAbbr(onsets[i], nucleuses[i], codas[i])
         braille += braille_char
 
-    # print(braille)
-
     arr = []
-
     for i in braille:
         arr += braille_list.braille_to_array.get(i)
-
-    # print(arr)
+        
     return arr
-
-
-# hangul_text = "스노우 복드"
-# textToBraille(hangul_text)
