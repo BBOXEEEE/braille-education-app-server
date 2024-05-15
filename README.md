@@ -8,7 +8,7 @@ To be updated.
 
 ## 🖥️ Model
 **모델 정보**
-- YOLOv8
+- YOLOv8 <br>
 모델은 다음 클래스들을 탐지할 수 있습니다.
 <details>
 <summary style="color: orange;"><strong>80개의 클래스 목록 보기</strong></summary>
