@@ -1,5 +1,5 @@
 import hgtk
-import braille_list
+from . import braille_list
 
 
 onsetList = {
