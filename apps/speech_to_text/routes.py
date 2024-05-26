@@ -67,6 +67,15 @@ def upload_file():
                 file_path = convert_to_wav(file_path)
 
             transcription = transcribe_audio(file_path)
+
+            # 음성 인식 결과가 없을 경우
+            if transcription == "":
+                return jsonify('EMPTY'), 202
+            
+            # 음성 인식 결과 영어가 포함되어 있을 경우
+            if any(char.isalpha() and char.isascii() for char in transcription):
+                return jsonify('EN'), 202
+            
             braille_list = textToBraille(transcription)
             ret = [{'word': transcription, 'braille': braille_list}]
             return jsonify(ret), 200
