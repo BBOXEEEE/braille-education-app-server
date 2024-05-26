@@ -4,6 +4,7 @@
 # Directories or files
 postman
 test
+*.json
 
 ### Flask ###
 instance/*
