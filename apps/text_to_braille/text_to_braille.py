@@ -76,7 +76,6 @@ def noneAbbr(onsets, nucleuses, codas):
 
 def textToBraille(hangeol):
     jamo = hgtk.text.decompose(hangeol).split('ᴥ')[:-1]
-    # print(jamo)
     onsets, nucleuses, codas = split_(jamo)
     
     checkAbbr = False
@@ -96,7 +95,6 @@ def textToBraille(hangeol):
                 braille_char = onsetList.get(onsets[i]) + braille_abbr
             else: 
                 if (onsets[i] == 'ㅇ'): # 초성이 'ㅇ'이고 종성이 없는지 확인 
-                    print(checkAbbr)
                     if (checkAbbr):
                         braille_char = tempOnset + nucleuseList.get(nucleuses[i]) + codaList.get(codas[i])
                         checkAbbr = False
